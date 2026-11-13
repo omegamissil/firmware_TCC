@@ -1,3 +1,35 @@
+Para adicionar uma indicação visual clara dos estados do sistema (Normal, Alerta e Crítico), a melhor abordagem com o ESP32 é utilizar um **LED RGB com 4 pinos (tipo Catodo Comum)** ou um **LED Endereçável WS2812B (NeoPixel)**. O LED RGB comum de 4 pinos é a opção mais direta e econômica, utilizando resistores limitadores de corrente e três pinos digitais com modulação PWM para controlar a intensidade e mesclar as cores.
+
+Abaixo estão os detalhes das ligações físicas e o código atualizado do firmware integrando a sinalização luminosa.
+
+---
+
+### 1. Ligações Físicas do LED RGB (Catodo Comum)
+
+Em um LED RGB de catodo comum, o pino mais longo é o **GND (Terra)**, e os outros três controlam as cores Vermelho, Verde e Azul.
+
+| Pino do LED RGB | Pino Correspondente no ESP32 | Componente Intermediário | Função / Descrição |
+| --- | --- | --- | --- |
+| **Pino Longo (Catodo / GND)** | Pino `GND` | Nenhum | Terra comum do LED |
+| **Pino Vermelho (R)** | Pino `GPIO 18` | Resistor de $220\,\Omega$ em série | Acende na cor Vermelha (Estado Crítico) |
+| **Pino Verde (G)** | Pino `GPIO 19` | Resistor de $220\,\Omega$ em série | Acende na cor Verde (Estado Normal) |
+| **Pino Azul (B)** | Pino `GPIO 23` | Resistor de $220\,\Omega$ em série | Acende na cor Azul (Estado de Alerta) |
+
+> **Nota de Segurança:** Sempre utilize resistores (entre $220\,\Omega$ e $330\,\Omega$) em série com os pinos de cor do LED RGB para limitar a corrente e proteger os pinos GPIO do ESP32.
+
+---
+
+### 2. Mapeamento de Cores para os Estados do Sistema
+
+* **Estado Normal ($T \le 27^\circ\text{C}$):** **Cor Verde** (indicando operação estável).
+* **Estado de Alerta ($27^\circ\text{C} < T \le 32^\circ\text{C}$):** **Cor Azul** (indicando ventilação auxiliar ativa).
+* **Estado Crítico ($T > 32^\circ\text{C}$):** **Cor Vermelha** (indicando alarme sonoro e emergência).
+
+---
+
+### 3. Código do Firmware Atualizado (Com Display LCD, MQTTS e LED RGB)
+
+```cpp
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <PubSubClient.h>
