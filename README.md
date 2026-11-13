@@ -294,4 +294,3 @@ void loop() {
 ## 📄 Licença e Contexto Acadêmico
 
 Este projeto foi desenvolvido para fins acadêmicos como parte de Trabalho de Conclusão de Curso (2026). Sinta-se à vontade para estudar, replicar e adaptar o código citando a fonte original.
->>>>>>> 9473ade (Adicionando o README.md do projeto)
